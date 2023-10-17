@@ -7,6 +7,7 @@ class GameObject:
     def __init__(self):
         self.components = {}
         self.type = ""
+        self.id = None
         
     def add_component(self, component):
         self.components[type(component)] = component
@@ -20,7 +21,7 @@ class GameObject:
 
 # Character Class inheriting from GameObject
 class Character(GameObject):
-    def __init__(self, x, y, hp):
+    def __init__(self, x, y, hp, id):
         super().__init__()
         self.x = x
         self.y = y
@@ -32,6 +33,7 @@ class Character(GameObject):
         self.prev_x = x
         self.prev_y = y
         self.collide_object = None
+        self.id = id
 
     def move(self, dx, dy):
         self.x += dx
@@ -53,23 +55,32 @@ class CollisionComponent:
     def __init__(self) -> None:
         pass
 
+class Interactable:
+    def __init__(self, types: list[str]) -> None:
+        self.types = types
+        self.selected_interaction_index = 0
+        self.content = "I want to fight with you!"
+
 class Player(Character):
-    def __init__(self, x, y):
-        super().__init__(x, y, hp=100)
-        self.add_components(PlayerControlComponent(), CollisionComponent(), AnimationComponent())
+    def __init__(self, x, y, id, name: str):
+        super().__init__(x, y, hp=100, id=id)
+        self.add_components(PlayerControlComponent(), CollisionComponent(), AnimationComponent(), Interactable(["fight", "talk"]))
+        self.name = name
 
 class Enemy(Character):
-    def __init__(self, x, y):
-        super().__init__(x, y, hp=50)
-        self.add_components(CollisionComponent())
+    def __init__(self, x, y, id, name: str = "Enemy"):
+        super().__init__(x, y, hp=50, id=id)
+        self.add_components(CollisionComponent(), Interactable(["fight", "talk"]))
+        self.name = name
 
 class Item(GameObject):
-    def __init__(self, x, y, item_type):
+    def __init__(self, x, y, item_type, id):
         super().__init__()
         self.x = x
         self.y = y
         self.item_type = item_type
         self.collide_object = None
+        self.id = id
         
 class MapComponent:
     def __init__(self) -> None:

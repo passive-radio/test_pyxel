@@ -24,7 +24,7 @@ class State:
 
     def render(self):
         for system in self.systems:
-            if system == RenderSystem or system == StaticRenderSystem:
+            if system == RenderSystem or system == StaticRenderSystem or type(system) == InteractionSystem:
                 system.execute(self.world.game_objects)
             else:
                 pass
@@ -87,7 +87,7 @@ class MainMenuState(State):
 class InGameState(State):
     def __init__(self, fps: int, game_objects) -> None:
         super().__init__(fps, game_objects)
-        self.systems = [StaticRenderSystem, PlayerControlSystem, RenderSystem, CollisionSystem, InteractSystem]
+        self.systems = [StaticRenderSystem, PlayerControlSystem, RenderSystem, CollisionSystem(), InteractionSystem()]
         
     def enter(self):
         # Initialization code when game starts
